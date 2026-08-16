@@ -36,3 +36,19 @@ jobs:
         run: |
           echo "Deploying web application..."
           echo "Deployment successful!"
+
+      - name: Slack Success Notification
+        if: success()
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data '{"text":"✅ CI/CD Pipeline succeeded for devops-webapp!"}' \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Slack Failure Notification
+        if: failure()
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data '{"text":"❌ CI/CD Pipeline failed for devops-webapp. Check GitHub Actions logs."}' \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
